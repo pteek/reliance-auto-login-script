@@ -25,7 +25,7 @@ import urllib.request, urllib.error, urllib.parse, urllib.request, urllib.parse,
 username = 'useranme' 
 password = 'password'
 #Faster interval for paranoia mode, set to anythign you like. In seconds.
-check_interval = 30 
+check_interval = 10 
 
 '''You don't normally have to edit anything below this line'''
 debug = False
@@ -49,7 +49,7 @@ def get_url(url, data=None, timeout=30, opener=None):
   html = response.read()
   return code, headers, html, opener
 
-def is_internet_on():
+def is_internet_on_old():
   '''test if the machine is connected to the internet'''
   if debug: print("Testing")
   try:
@@ -64,6 +64,16 @@ def is_internet_on():
     if debug: print("Error")
     return False
   return False
+  
+def is_internet_on(): #New connectivity check fucntion, uses sockets and 
+  s = socket.socket() #can test for + in less than 10ms and - in <1000ms(This can be changed using the time out)
+  s.settimeout(1)
+  try:
+     s.connect(('8.8.8.8',53))
+     s.settimeout(None)
+  except OSError:
+    return False
+  return True
 
 def internet_connect():
   '''try to connect to the internet'''
@@ -85,8 +95,8 @@ def internet_keep_alive():
   '''login and keep the connection live'''
   while True:
     if not is_internet_on():
-      internet_connect()
       if debug: print("Not connected")
+      internet_connect()
     else:
       if debug: print("Connected")
       pass
