@@ -6,9 +6,11 @@
 # Copyright (c) 2009 Kunal Dua, http://www.kunaldua.com/blog/?p=330
 # Copyright (c) 2012 Anoop John, http://www.zyxware.com
 # Updated to work with Python 3.3.3 by @pteek
-# TODO: Exception handlng in connect and disconnect functions.
-#       Use of socekt to google.com or any other website on port 80 for login test. Because Reliance servers timeout 1 out of 5 times.
-#       IP of google in a var to minimize DNS lookup
+# TODO: DONE:Exception handlng in connect and disconnect functions.
+#       DONE:Use of socekt to google.com or any other website on port 80 for login test. Because Reliance servers timeout 1 out of 5 times.
+#       DONE? USING 8.8.8.8 IP of google in a var to minimize DNS lookup
+#
+# Reconnects in under 1 second with idle conditions.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,12 +22,12 @@
 # GNU General Public License for more details.
 """
  
-import urllib.request, urllib.error, urllib.parse, urllib.request, urllib.parse, urllib.error, http.cookiejar, time, re, sys
+import urllib.request, urllib.error, urllib.parse, urllib.request, urllib.parse, urllib.error, http.cookiejar, time, re, sys, socket
 
 username = 'useranme' 
 password = 'password'
 #Faster interval for paranoia mode, set to anythign you like. In seconds.
-check_interval = 10 
+check_interval = .1
 
 '''You don't normally have to edit anything below this line'''
 debug = False
@@ -43,7 +45,13 @@ def get_url(url, data=None, timeout=30, opener=None):
   if not opener:
     jar = http.cookiejar.FileCookieJar("cookies")
     opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(jar))
-  response = opener.open(request, data)
+    
+  while 1:
+   try:
+     response = opener.open(request, data)
+   except:
+     continue
+   break
   code = response.code
   headers = response.headers
   html = response.read()
@@ -70,6 +78,7 @@ def is_internet_on(): #New connectivity check fucntion, uses sockets and
   s.settimeout(1)
   try:
      s.connect(('8.8.8.8',53))
+     s.close()
      s.settimeout(None)
   except OSError:
     return False
@@ -77,11 +86,11 @@ def is_internet_on(): #New connectivity check fucntion, uses sockets and
 
 def internet_connect():
   '''try to connect to the internet'''
-  code, headers, html, cur_opener = get_url("http://reliancebroadband.co.in/reliance/startportal_isg.do", timeout=10)
+  code, headers, html, cur_opener = get_url("http://reliancebroadband.co.in/reliance/startportal_isg.do", timeout=3)
   if debug: print(html)
   login_data1 = urllib.parse.urlencode({'userId' : username, 'password' : password, 'action' : 'doLoginSubmit'}) 
   login_data = login_data1.encode('utf-8') #Needed this type conv for 3.3.3
-  code, headers, html, cur_opener = get_url('http://reliancebroadband.co.in/reliance/login.do', data=login_data, opener=cur_opener)
+  code, headers, html, cur_opener = get_url('http://reliancebroadband.co.in/reliance/login.do', data=login_data, timeout=3, opener=cur_opener)
   if debug: print(html)
 
 def internet_disconnect():
