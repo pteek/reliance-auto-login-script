@@ -74,7 +74,7 @@ def is_internet_on_old():
   return False
   
 def is_internet_on(): #New connectivity check fucntion, uses sockets and 
-  s = socket.socket() #can test for + in less than 10ms and - in <1000ms(This can be changed using the time out)
+  s = socket.socket(socket.AF_INET,socket.SOCK_STREAM) #can test for + in less than 10ms and - in <1000ms(This can be changed using the time out)
   s.settimeout(1)
   try:
      s.connect(('8.8.8.8',53))
