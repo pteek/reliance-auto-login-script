@@ -78,7 +78,7 @@ def is_internet_on(): #New connectivity check fucntion, uses sockets and
   s.settimeout(1)
   try:
      s.connect(('8.8.8.8',53))
-     s.shutdown()
+     s.shutdown(SHUT_RDWR)
      s.close()
      s.settimeout(None)
   except OSError:
