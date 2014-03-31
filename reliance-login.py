@@ -22,7 +22,7 @@
 # GNU General Public License for more details.
 """
  
-import urllib.request, urllib.error, urllib.parse, urllib.request, urllib.parse, urllib.error, http.cookiejar, time, re, sys, socket
+import urllib.request, urllib.error, urllib.parse, http.cookiejar, time, re, sys, socket
 
 username = 'useranme' 
 password = 'password'
