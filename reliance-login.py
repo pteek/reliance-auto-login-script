@@ -63,11 +63,11 @@ def is_internet_on_old():
   try:
     code, headers, html, opener = get_url('http://reliancebroadband.co.in/reliance/startportal_isg.do', timeout=10)
     if debug: print(html)
-    #Checks if www.w3.org is present in [:5] of the html, presence means not logged in. A hack for quick checking, username can be used instead with inverse logic.
-    if not re.search('www.w3.org'.encode('utf-8')[:5], html):
-      return True
-    else:
+    #Checks if www.w3.org is present in [:96] of the html, presence means not logged in. A hack for quick checking, username can be used instead with inverse logic.
+    if re.search('www.w3.org'.encode('utf-8'), html[:96]):
       return False
+    else:
+      return True
   except: 
     if debug: print("Error")
     return False
