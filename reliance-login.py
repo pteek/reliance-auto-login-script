@@ -89,8 +89,7 @@ def internet_connect():
   '''try to connect to the internet'''
   code, headers, html, cur_opener = get_url("http://reliancebroadband.co.in/reliance/startportal_isg.do", timeout=3)
   if debug: print(html)
-  login_data1 = urllib.parse.urlencode({'userId' : username, 'password' : password, 'action' : 'doLoginSubmit'}) 
-  login_data = login_data1.encode('utf-8') #Needed this type conv for 3.3.3
+  login_data = urllib.parse.urlencode({'userId' : username, 'password' : password, 'action' : 'doLoginSubmit'}).encode('utf-8') #Needed this type conv for 3.3.3
   code, headers, html, cur_opener = get_url('http://reliancebroadband.co.in/reliance/login.do', data=login_data, timeout=3, opener=cur_opener)
   if debug: print(html)
 
