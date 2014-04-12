@@ -27,7 +27,7 @@ import urllib.request, urllib.error, urllib.parse, http.cookiejar, time, re, sys
 username = 'useranme' 
 password = 'password'
 #Faster interval for paranoia mode, set to anythign you like. In seconds.
-check_interval = .1
+check_interval = 10
 
 '''You don't normally have to edit anything below this line'''
 debug = False
