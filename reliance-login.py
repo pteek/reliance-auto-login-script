@@ -66,7 +66,7 @@ def is_internet_on_old():
     code, headers, html, opener = get_url('http://reliancebroadband.co.in/reliance/startportal_isg.do', timeout=10)
     if debug: print(html)
     #Checks if www.w3.org is present in [:96] of the html, presence means not logged in. A hack for quick checking, username can be used instead with inverse logic.
-    if re.search('www.w3.org'.encode('utf-8'), html[:96]):
+    if re.search('www.w3.org'.encode('UTF-8'), html[:96]):
       return False
     else:
       return True
@@ -91,10 +91,10 @@ def internet_connect():
   '''try to connect to the internet'''
   code, headers, html, cur_opener = get_url("http://reliancebroadband.co.in/reliance/startportal_isg.do", timeout=3)
   if debug: print(html)
-  login_data = urllib.parse.urlencode({'userId' : username, 'password' : password, 'action' : 'doLoginSubmit'}).encode('utf-8') #Needed this type conv for 3.3.3
+  login_data = urllib.parse.urlencode({'userId' : username, 'password' : password, 'action' : 'doLoginSubmit'}).encode('UTF-8') #Needed this type conv for 3.3.3
   code, headers, html, cur_opener = get_url('http://reliancebroadband.co.in/reliance/login.do', data=login_data, timeout=3, opener=cur_opener)
   if debug: print(html)
-  if re.search('sessionTerimination.do', html[:5766].decode('iso-8859-1')):
+  if re.search('sessionTerimination.do', html[:5766].decode('UTF-8')):
       if debug:print('Found sessionTerimination.do in html.')
       terminate()
       internet_connect()
@@ -105,7 +105,7 @@ def terminate():
                                            timeout = 3)
   post_data = urllib.parse.urlencode({'userName' : username,
                                       'action' : 'questionPassword'
-                                      }).encode('iso-8859-1')
+                                      }).encode('UTF-8')
   code, headers, html, cur_opener = get_url("http://reliancebroadband.co.in/reliance/sessionTerimination.do",
                                           data = post_data,
                                           opener = cur_opener,
@@ -120,7 +120,7 @@ def terminate():
                                       'secretQuestion': sec_q,
                                       'secretAnswer' : secret,
                                       'action' : 'finalPassword'
-                                       }).encode('iso-8859-1')
+                                       }).encode('UTF-8')
   code, headers, html, cur_opener = get_url("http://reliancebroadband.co.in/reliance/sessionTerimination.do",
                                             data = post_data,
                                             opener = cur_opener,
