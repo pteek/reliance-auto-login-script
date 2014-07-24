@@ -23,9 +23,11 @@
 """
  
 import urllib.request, urllib.error, urllib.parse, http.cookiejar, time, re, sys, socket
+from bs4 import BeautifulSoup as bs
 
-username = 'useranme' 
+username = 'username' 
 password = 'password'
+secret = 'secret'
 #Faster interval for paranoia mode, set to anythign you like. In seconds.
 check_interval = 10
 
@@ -92,6 +94,38 @@ def internet_connect():
   login_data = urllib.parse.urlencode({'userId' : username, 'password' : password, 'action' : 'doLoginSubmit'}).encode('utf-8') #Needed this type conv for 3.3.3
   code, headers, html, cur_opener = get_url('http://reliancebroadband.co.in/reliance/login.do', data=login_data, timeout=3, opener=cur_opener)
   if debug: print(html)
+  if re.search('sessionTerimination.do', html[:5766].decode('iso-8859-1')):
+      if debug:print('Found sessionTerimination.do in html.')
+      terminate()
+      internet_connect()
+
+def terminate():
+  if debug:print('Called to termiante session.')
+  code, headers,  html, cur_opener = get_url("http://reliancebroadband.co.in/reliance/sessionTerimination.do",
+                                           timeout = 3)
+  post_data = urllib.parse.urlencode({'userName' : username,
+                                      'action' : 'questionPassword'
+                                      }).encode('iso-8859-1')
+  code, headers, html, cur_opener = get_url("http://reliancebroadband.co.in/reliance/sessionTerimination.do",
+                                          data = post_data,
+                                          opener = cur_opener,
+                                          timeout = 3)
+  if debug:print('Posted',username,'.')
+  soup = bs(html.decode('iso-8859-1'))
+  items = soup.findAll('input')
+  displayName = items[0]['value']
+  sec_q = items[2]['value']
+  post_data = urllib.parse.urlencode({'displayName': displayName,
+                                      'userName': username,
+                                      'secretQuestion': sec_q,
+                                      'secretAnswer' : secret,
+                                      'action' : 'finalPassword'
+                                       }).encode('iso-8859-1')
+  code, headers, html, cur_opener = get_url("http://reliancebroadband.co.in/reliance/sessionTerimination.do",
+                                            data = post_data,
+                                            opener = cur_opener,
+                                            timeout = 3)
+  if debug:print('Posted',displayName,username,sec_q,secret)
 
 def internet_disconnect():
   '''try to disconnect from the internet'''
