@@ -12,6 +12,8 @@
 #
 # Reconnects in under 1 second with idle conditions.
 #
+# Requrires BeautifulSoup to be installed. Install with "pip install beautifulsoup4"
+#
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; version 2 of the License.
