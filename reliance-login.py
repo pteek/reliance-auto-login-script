@@ -171,4 +171,5 @@ if (len(sys.argv) > 1):
 
 ''' default action without any arguments - keep alive'''
 if keep_alive:
+  print("No arguments given.\nKeep alive mode.")
   internet_keep_alive();
