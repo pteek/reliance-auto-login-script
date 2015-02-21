@@ -87,6 +87,8 @@ def is_internet_on(): #New connectivity check fucntion, uses sockets and
      s.settimeout(None)
   except OSError:
     return False
+  except socket.timeout:
+    return False
   return True
 
 def internet_connect():
